@@ -73,27 +73,38 @@
 (define
  (part-2 inputs)
  (define (filter-by-first-num inputs num)
-         (filter (lambda (line)
-                         (= (car line)
-                            num))
-                 inputs))
+         (if (= (length inputs) 1)
+             inputs
+             (filter (lambda (line)
+                             (= (car line)
+                                num))
+                     inputs)))
  
- (define (traverse inputs)
+ (define (traverse inputs criteria)
          (let loop ((inputs inputs))
-            (if (or (null? inputs)
-                    (null? (car inputs)))
-                '()
-                (if (>= (apply + (map car inputs))
-                        (/ (length inputs) 2))
-                    (cons 1 (loop (map cdr (filter-by-first-num inputs 1))))
-                    (cons 0 (loop (map cdr (filter-by-first-num inputs 0))))))))
+              (if (null? (car inputs))
+                  '()
+                  (begin
+                   (cond ((= (length inputs) 1)
+                          (car inputs))
+                         ((criteria (apply + (map car inputs))
+                           (/ (length inputs) 2))
+                          (cons 1 (loop (map cdr (filter-by-first-num inputs 1)))))
+                         (else
+                          (cons 0 (loop (map cdr (filter-by-first-num inputs 0))))))))))
               
          
- (let ((inputs (map (lambda (line)
-                            (map (compose string->number string) line))
-                    inputs)))
-      (display
-       (traverse inputs))))
+ (let* ((inputs (map (lambda (line)
+                             (map (compose string->number string) line))
+                     inputs))
+        (oxygen-generator-rating
+          (bin-list->integer (traverse inputs >=)))
+        (co2-scrubber-rating 
+          (bin-list->integer (traverse inputs <))))
+      (format #t "oxygen generator rating: ~a\n" oxygen-generator-rating)
+      (format #t "CO2 scrubber rating: ~a\n" co2-scrubber-rating)
+      (format #t "life support rating (product of above): ~a\n"
+              (* oxygen-generator-rating co2-scrubber-rating))))
 
-; (part-1 inputs)
+(part-1 inputs)
 (part-2 inputs)
