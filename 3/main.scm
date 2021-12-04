@@ -68,7 +68,11 @@
  (format #t "product of gamma and epsilon: ~a\n"
   (* gamma-as-number epsilon-as-number)))
 
-(define (part-2) #t)
+(define
+ (part-2)
+ (define flipped (apply map list
+                        inputs))
+ (display flipped))
 
 (part-1)
 (part-2)
