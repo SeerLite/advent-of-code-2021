@@ -4,6 +4,7 @@
 
 (define inputs (filter-map (lambda (line)
                                    (define line-as-list (string->list line))
+
                                    (if (null? line-as-list)
                                        #f
                                        line-as-list))
@@ -22,8 +23,10 @@
                                     "")
                        2))
 
+(define total-lines (length inputs))
+
 (define
- (part-1)
+ (part-1 inputs)
  (define ones
          (let ((results (make-list (length (car inputs)) 0)))
             (fold (lambda (current-line results)
@@ -36,10 +39,9 @@
                   results
                   inputs)))
  (define zeroes
-         (let ((total-lines (length inputs)))
-              (map (lambda (this-one)
-                           (- total-lines this-one))
-                   ones)))
+         (map (lambda (this-one)
+                      (- total-lines this-one))
+              ones))
 
  (print-num-list "ones" ones)
  (print-num-list "zeroes" zeroes)
@@ -69,10 +71,29 @@
   (* gamma-as-number epsilon-as-number)))
 
 (define
- (part-2)
- (define flipped (apply map list
-                        inputs))
- (display flipped))
+ (part-2 inputs)
+ (define (filter-by-first-num inputs num)
+         (filter (lambda (line)
+                         (= (car line)
+                            num))
+                 inputs))
+ 
+ (define (traverse inputs)
+         (let loop ((inputs inputs))
+            (if (or (null? inputs)
+                    (null? (car inputs)))
+                '()
+                (if (>= (apply + (map car inputs))
+                        (/ (length inputs) 2))
+                    (cons 1 (loop (map cdr (filter-by-first-num inputs 1))))
+                    (cons 0 (loop (map cdr (filter-by-first-num inputs 0))))))))
+              
+         
+ (let ((inputs (map (lambda (line)
+                            (map (compose string->number string) line))
+                    inputs)))
+      (display
+       (traverse inputs))))
 
-(part-1)
-(part-2)
+; (part-1 inputs)
+(part-2 inputs)
