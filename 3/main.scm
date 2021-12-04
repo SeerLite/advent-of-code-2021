@@ -28,12 +28,12 @@
                           (- total-lines this-one))
                   ones)))
 
-(define (format-num-list name content)
+(define (print-num-list name content)
         (let ((content (string-join (map number->string content))))
              (format #t "~a: ~a\n" name content)))
 
-(format-num-list "ones" ones)
-(format-num-list "zeroes" zeroes)
+(print-num-list "ones" ones)
+(print-num-list "zeroes" zeroes)
 
 (define gamma (map (lambda (ones zeroes)
                            (if (> ones zeroes)
@@ -46,5 +46,5 @@
                              (logxor n 1))
                      gamma))
 
-(format-num-list "gamma" gamma)
-(format-num-list "epsilon" epsilon)
+(print-num-list "gamma" gamma)
+(print-num-list "epsilon" epsilon)
