@@ -1,5 +1,6 @@
 (use-modules (ice-9 textual-ports)
-             (srfi srfi-1))
+             (srfi srfi-1)
+             (srfi srfi-60))
 
 (define inputs (filter-map (lambda (line)
                                    (define line-as-list (string->list line))
@@ -33,3 +34,17 @@
 
 (format-num-list "ones" ones)
 (format-num-list "zeroes" zeroes)
+
+(define gamma (map (lambda (ones zeroes)
+                           (if (> ones zeroes)
+                               1
+                               0))
+                   ones
+                   zeroes))
+
+(define epsilon (map (lambda (n)
+                             (logxor n 1))
+                     gamma))
+
+(format-num-list "gamma" gamma)
+(format-num-list "epsilon" epsilon)
