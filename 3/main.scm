@@ -26,14 +26,10 @@
              (map (lambda (this-one)
                           (- total-lines this-one))
                   ones)))
-         
-; This for-each turned out to be more code than if I had just left
-; the lines format duplicated lol
-(for-each (lambda (data-pair)
-                  (define name (car data-pair))
-                  (define content (cdr data-pair))
-                  (format #t "~a: ~a\n" name
-                          (string-join (map number->string content))))
-          `(("ones" . ,ones) ("zeroes" . ,zeroes)))
 
+(define (format-num-list name content)
+        (let ((content (string-join (map number->string content))))
+             (format #t "~a: ~a\n" name content)))
 
+(format-num-list "ones" ones)
+(format-num-list "zeroes" zeroes)
