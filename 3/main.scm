@@ -48,3 +48,19 @@
 
 (print-num-list "gamma" gamma)
 (print-num-list "epsilon" epsilon)
+
+(define (bin-list->integer bin-list)
+        (string->number (string-join (map number->string
+                                          bin-list)
+                                     "")
+                        2))
+
+(define gamma-as-number (bin-list->integer gamma))
+(define epsilon-as-number (bin-list->integer epsilon))
+
+(format #t "gamma as number: ~a\n"
+        gamma-as-number)
+(format #t "epsilon as number: ~a\n"
+        epsilon-as-number)
+(format #t "product of gamma and epsilon: ~a\n"
+        (* gamma-as-number epsilon-as-number))
