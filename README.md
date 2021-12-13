@@ -1,3 +1,5 @@
+All Python programs use Python version 3.8.2 unless otherwise stated. I am aware that in Python 3.9 and forward there are nicer typing hints, but sadly my current Guix installation only has up to 3.8.2 and I don't think I can get a newer version without recompiling yet.
+
 ### Dec 1
 * Python because that's what I know best
 
