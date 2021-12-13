@@ -59,22 +59,36 @@ def board_wins_column(board: Board) -> bool:
 
     return False
 
-def find_winning_board(boards: List[Board]) -> Optional[int]:
+def pop_winning_boards(boards: List[Board]) -> Optional[List[Board]]:
+    winning_indexes = []
     for i, board in enumerate(boards):
         if board_wins_row(board) or board_wins_column(board):
-            return i
+            winning_indexes.append(i)
 
-    return None # should be implied but mypy complains
+    winning_boards = []
+    for i in reversed(winning_indexes):
+        winning_boards.append(boards[i])
+        del boards[i]
 
-def play_boards(boards: List[Board]) -> Tuple[Board, int]:
-    while not (winning_index := find_winning_board(boards)):
+    return winning_boards or None
+
+def play_boards_until_win(boards: List[Board]) -> Optional[Tuple[List[Board], int]]:
+    while len(order) > 0 and not (winning_boards := pop_winning_boards(boards)):
         number = order.pop()
         for board in boards:
             for row in board:
                 if number in row:
                     row[number] = True
 
-    return boards[winning_index], int(number)
+    if winning_boards:
+        return winning_boards, int(number)
+    else:
+        return None
+
+def play_boards_until_last_win(boards: List[Board]) -> Tuple[List[Board], int]:
+    while (result := play_boards_until_win(boards)):
+        last_winning_result = result
+    return last_winning_result
 
 def sum_all_unmarked(board: Board) -> int:
     sum = 0
@@ -90,8 +104,13 @@ order = raw_order.split(",")
 order.reverse()
 boards = parse_raw_boards(raw_boards)
 
-winning_board, winning_number = play_boards(boards)
+if (result := play_boards_until_win(boards)):
+    winning_boards, winning_number = result
 
-score = sum_all_unmarked(winning_board) * winning_number
+last_winning_boards, last_winning_number = play_boards_until_last_win(boards)
 
-print(f"Score of winning board: {score}")
+first_winning_score = sum_all_unmarked(winning_boards[0]) * winning_number
+last_winning_score = sum_all_unmarked(last_winning_boards[0]) * last_winning_number
+
+print(f"Score of first winning board: {first_winning_score}")
+print(f"Score of last winning board: {last_winning_score}")
