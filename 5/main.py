@@ -1,6 +1,34 @@
 from typing import List, Tuple, NamedTuple, DefaultDict
 from itertools import chain
 from collections import defaultdict
+import math
+
+EXAMPLE_MODE = False
+
+if EXAMPLE_MODE:
+    from sys import stdout
+    from time import sleep
+
+    UPDATE_DELAY = 0.2
+
+    def display_map(map: "Map") -> None:
+        # Clear screen via terminal escape sequence
+        stdout.write("\x1b[H\x1b[J")
+        max_x = 0
+        min_x = float("inf")
+        for y in range(min(map.keys()), max(map.keys()) + 1):
+            if map[y].keys():
+                max_x = max(*map[y].keys(), max_x)
+                min_x = min(*map[y].keys(), min_x)
+
+        min_x = int(min_x)
+
+        for y in range(min(map.keys()), max(map.keys()) + 1):
+            for x in range(min_x, max_x + 1): # int() is redundant but mypy complains
+                stdout.write(str(map[y][x]) if map[y][x] > 0 else ".")
+            stdout.write("\n")
+        stdout.flush()
+
 
 class Coordinate(NamedTuple):
     x: int
@@ -13,7 +41,8 @@ class Vector(NamedTuple):
 Map = DefaultDict[int, DefaultDict[int, int]]
 
 def read_input_file() -> str:
-    with open("input.txt") as input_file:
+    filename = "input.txt" if not EXAMPLE_MODE else "input.example.txt"
+    with open(filename) as input_file:
         return input_file.read().strip()
 
 def parse_vectors(raw_vectors: List[str]) -> List[Vector]:
@@ -27,23 +56,50 @@ def parse_vectors(raw_vectors: List[str]) -> List[Vector]:
     return vectors
 
 
-def fill_aligned_lines(vectors: List[Vector]) -> Map:
+def fill_lines(vectors: List[Vector]) -> Map:
     map: Map = defaultdict(lambda: defaultdict(int))
     for vector in vectors:
+        x_increment = int(math.copysign(1, vector.end.x - vector.start.x))
+        y_increment = int(math.copysign(1, vector.end.y - vector.start.y))
+
         if vector.start.x == vector.end.x:
-            for y in range(min(vector.start.y, vector.end.y), max(vector.start.y, vector.end.y) + 1):
-                map[y][vector.start.x] += 1
+            x = vector.start.x
+            for y in range(vector.start.y, vector.end.y + y_increment, y_increment):
+                map[y][x] += 1
+                if EXAMPLE_MODE:
+                    display_map(map)
+                    print(x, y)
+                    print()
+                    sleep(UPDATE_DELAY)
         elif vector.start.y == vector.end.y:
-            for x in range(min(vector.start.x, vector.end.x), max(vector.start.x, vector.end.x) + 1):
-                map[vector.start.y][x] += 1
+            y = vector.start.y
+            for x in range(vector.start.x, vector.end.x + x_increment, x_increment):
+                map[y][x] += 1
+                if EXAMPLE_MODE:
+                    display_map(map)
+                    print(x, y)
+                    print()
+                    sleep(UPDATE_DELAY)
+        else:
+            for x, y in zip(
+                range(vector.start.x, vector.end.x + x_increment, x_increment),
+                range(vector.start.y, vector.end.y + y_increment, y_increment)
+            ):
+                map[y][x] += 1
+                if EXAMPLE_MODE:
+                    display_map(map)
+                    print(x, y)
+                    print()
+                    sleep(UPDATE_DELAY)
+
     return map
 
-def count_overlapping_lines(map: Map) -> int:
+def count_overlapping_cells(map: Map) -> int:
     flattened_map = chain(*(row.values() for row in map.values()))
     return [x >= 2 for x in flattened_map].count(True)
 
 vectors: List[Vector] = parse_vectors(read_input_file().split("\n"))
-map: Map = fill_aligned_lines(vectors)
-overlapping_lines = count_overlapping_lines(map)
+map: Map = fill_lines(vectors)
+overlapping_cells = count_overlapping_cells(map)
 
-print(f"Number of overlapping vents: {overlapping_lines}")
+print(f"Number of overlapping vents: {overlapping_cells}")
