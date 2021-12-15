@@ -1,4 +1,4 @@
-from typing import List, Tuple, NamedTuple, DefaultDict
+from typing import NamedTuple
 from itertools import chain
 from collections import defaultdict
 import math
@@ -38,14 +38,14 @@ class Vector(NamedTuple):
     start: Coordinate
     end: Coordinate
 
-Map = DefaultDict[int, DefaultDict[int, int]]
+Map = defaultdict[int, defaultdict[int, int]]
 
 def read_input_file() -> str:
     filename = "input.txt" if not EXAMPLE_MODE else "input.example.txt"
     with open(filename) as input_file:
         return input_file.read().strip()
 
-def parse_vectors(raw_vectors: List[str]) -> List[Vector]:
+def parse_vectors(raw_vectors: list[str]) -> list[Vector]:
     vectors = []
     for vector in raw_vectors:
         raw_start, raw_end = vector.split(" -> ")
@@ -56,7 +56,7 @@ def parse_vectors(raw_vectors: List[str]) -> List[Vector]:
     return vectors
 
 
-def fill_lines(vectors: List[Vector]) -> Map:
+def fill_lines(vectors: list[Vector]) -> Map:
     map: Map = defaultdict(lambda: defaultdict(int))
     for vector in vectors:
         x_increment = int(math.copysign(1, vector.end.x - vector.start.x))
@@ -98,7 +98,7 @@ def count_overlapping_cells(map: Map) -> int:
     flattened_map = chain(*(row.values() for row in map.values()))
     return [x >= 2 for x in flattened_map].count(True)
 
-vectors: List[Vector] = parse_vectors(read_input_file().split("\n"))
+vectors: list[Vector] = parse_vectors(read_input_file().split("\n"))
 map: Map = fill_lines(vectors)
 overlapping_cells = count_overlapping_cells(map)
 

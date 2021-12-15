@@ -4,7 +4,7 @@
 #
 # Maybe I learn something about avoiding premature optimization.
 
-from typing import List, Tuple, Dict, Any, Optional
+from typing import Any, Optional
 
 # boards = [
 #     [ # board
@@ -19,9 +19,9 @@ from typing import List, Tuple, Dict, Any, Optional
 #     ...
 # ]
 
-Board = List[Dict[str, bool]]
+Board = list[dict[str, bool]]
 
-def read_input_file() ->  Tuple[str, str]:
+def read_input_file() ->  tuple[str, str]:
     with open("input.txt") as input_file:
         order = input_file.readline().strip()
 
@@ -32,7 +32,7 @@ def read_input_file() ->  Tuple[str, str]:
 
         return order, boards
 
-def parse_raw_boards(raw_boards: str) -> List[Board]:
+def parse_raw_boards(raw_boards: str) -> list[Board]:
     boards = []
 
     # Spiltting at every double newline will split at every board
@@ -59,7 +59,7 @@ def board_wins_column(board: Board) -> bool:
 
     return False
 
-def pop_winning_boards(boards: List[Board]) -> Optional[List[Board]]:
+def pop_winning_boards(boards: list[Board]) -> Optional[list[Board]]:
     winning_indexes = []
     for i, board in enumerate(boards):
         if board_wins_row(board) or board_wins_column(board):
@@ -72,7 +72,7 @@ def pop_winning_boards(boards: List[Board]) -> Optional[List[Board]]:
 
     return winning_boards or None
 
-def play_boards_until_win(boards: List[Board]) -> Optional[Tuple[List[Board], int]]:
+def play_boards_until_win(boards: list[Board]) -> Optional[tuple[list[Board], int]]:
     while len(order) > 0 and not (winning_boards := pop_winning_boards(boards)):
         number = order.pop()
         for board in boards:
@@ -85,7 +85,7 @@ def play_boards_until_win(boards: List[Board]) -> Optional[Tuple[List[Board], in
     else:
         return None
 
-def play_boards_until_last_win(boards: List[Board]) -> Tuple[List[Board], int]:
+def play_boards_until_last_win(boards: list[Board]) -> tuple[list[Board], int]:
     while (result := play_boards_until_win(boards)):
         last_winning_result = result
     return last_winning_result

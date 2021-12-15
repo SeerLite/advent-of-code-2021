@@ -1,4 +1,4 @@
-All Python programs use Python version 3.8.2 unless otherwise stated. I am aware that in Python 3.9 and forward there are nicer typing hints, but sadly my current Guix installation only has up to 3.8.2 and I don't think I can get a newer version without recompiling yet.
+All Python programs require Python version 3.9 or higher, unless otherwise stated.
 
 ### Dec 1
 * Python because that's what I know best
@@ -9,3 +9,9 @@ All Python programs use Python version 3.8.2 unless otherwise stated. I am aware
 ### Dec 13
 * PDT season is over so I can finally focus on this. I'm going back to Python to try to catch up.
 * I've been writing a little TypeScript lately so I missed the type hints. I set up a primitive mypy environment for day 4 and the experience has been great. I might continue like this.
+
+### Dec 14
+* Day 6 is a sneaky one. I'll leave part 2 for tomorrow.
+
+### Dec 15
+* I updated from Python 3.8.2 to 3.9.6. Yay typing!

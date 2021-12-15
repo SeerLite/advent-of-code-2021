@@ -1,9 +1,9 @@
-from typing import List, Sequence
+from collections.abc import Sequence
 
 EXAMPLE = True
 DEBUG = True
 
-def read_list_from_file() -> List[int]:
+def read_list_from_file() -> list[int]:
     if not EXAMPLE:
         filename = "input.txt"
     else:
@@ -12,7 +12,7 @@ def read_list_from_file() -> List[int]:
     with open(filename) as input_file:
         return [int(x) for x in input_file.read().strip().split(",")]
 
-def pass_days(lanternfish_input: Sequence[int], days: int) -> Sequence[int]:
+def pass_days(lanternfish_input: Sequence[int], days: int) -> list[int]:
     if DEBUG:
         print(f"DAYS: {days}")
     lanternfish = [x for x in lanternfish_input]
