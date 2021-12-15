@@ -1,5 +1,5 @@
 #!/bin/sh
 
 dmypy start
-fd -e py . | entr -ccrs 'dmypy check . && python3 main.py'
+fd -e py . | entr -ccr dmypy check .
 dmypy stop
