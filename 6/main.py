@@ -15,10 +15,18 @@ def read_list_from_file() -> list[int]:
         return [int(x) for x in input_file.read().strip().split(",")]
 
 def visualize_days(lanternfish: Sequence[int], days: int) -> None:
+    # I know the mathematical way is still imperative and that I'm using
+    # the wrong word but I'm too lazy to change it now
     lanternfish = list(lanternfish)
-    children_fishes_mathematical = [math.ceil((timer - days) / -7) for timer in lanternfish]
+    children_fishes_mathematical: list[int] = []
+    new_lanternfish_mathematical: list[int] = []
+    for timer in lanternfish:
+        amount_of_new_fishes = math.ceil((timer - days) / -7)
+        children_fishes_mathematical.append(amount_of_new_fishes)
+        new_lanternfish_mathematical += [8] * amount_of_new_fishes
+
     children_fishes_imperative = [0] * len(lanternfish)
-    new_lanternfish: list[int] = []
+    new_lanternfish_imperative: list[int] = []
     for day in range(days):
         # print(lanternfish)
         # sleep(0.2)
@@ -27,12 +35,13 @@ def visualize_days(lanternfish: Sequence[int], days: int) -> None:
             if lanternfish[i] < 0:
                 children_fishes_imperative[i] += 1
                 lanternfish[i] = 6
-                new_lanternfish.append(8)
+                new_lanternfish_imperative.append(8)
 
     print(f"Mathematical: {children_fishes_mathematical}")
     print(f"Imperative: {children_fishes_imperative}")
 
-    # print(new_lanternfish)
+    print(f"New fishes from mathematical: {new_lanternfish_mathematical}")
+    print(f"New fishes from imperative: {new_lanternfish_imperative}")
     print()
 
 def pass_days(lanternfish_input: Sequence[int], days: int) -> list[int]:
@@ -67,8 +76,6 @@ lanternfish = read_list_from_file()
 
 visualize_days(lanternfish, 18)
 visualize_days(lanternfish, 30)
-visualize_days(lanternfish, 80)
-visualize_days(lanternfish, 343)
 
 # for days, lanternfish_after in lanternfish_after_days.items():
 #     print(f"Number of lanternfish after {days} days: {len(lanternfish_after)}")
