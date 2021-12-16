@@ -15,34 +15,41 @@ def read_list_from_file() -> list[int]:
         return [int(x) for x in input_file.read().strip().split(",")]
 
 def visualize_days(lanternfish: Sequence[int], days: int) -> None:
-    # I know the mathematical way is still imperative and that I'm using
-    # the wrong word but I'm too lazy to change it now
+    visualize_days_mathematical(lanternfish, days)
+    print()
+    visualize_days_imperative(lanternfish, days)
+    print()
+
+def visualize_days_mathematical(lanternfish: Sequence[int], days: int) -> None:
     lanternfish = list(lanternfish)
-    children_fishes_mathematical: list[int] = []
-    new_lanternfish_mathematical: list[int] = []
+    children_fishes: list[int] = []
+    new_lanternfish: list[int] = []
     for timer in lanternfish:
         amount_of_new_fishes = math.ceil((timer - days) / -7)
-        children_fishes_mathematical.append(amount_of_new_fishes)
-        new_lanternfish_mathematical += [8] * amount_of_new_fishes
+        children_fishes.append(amount_of_new_fishes)
+        new_lanternfish += [8] * amount_of_new_fishes
 
-    children_fishes_imperative = [0] * len(lanternfish)
-    new_lanternfish_imperative: list[int] = []
+    print(f"Mathematical: {children_fishes}")
+    print(f"New fishes from mathematical: {new_lanternfish}")
+
+# I know the mathematical way is still imperative and that I'm using
+# the wrong word but I'm too lazy to change it now
+def visualize_days_imperative(lanternfish: Sequence[int], days: int) -> None:
+    lanternfish = list(lanternfish)
+    children_fishes = [0] * len(lanternfish)
+    new_lanternfish: list[int] = []
     for day in range(days):
         # print(lanternfish)
         # sleep(0.2)
         for i in range(len(lanternfish)):
             lanternfish[i] -= 1
             if lanternfish[i] < 0:
-                children_fishes_imperative[i] += 1
+                children_fishes[i] += 1
                 lanternfish[i] = 6
-                new_lanternfish_imperative.append(8)
+                new_lanternfish.append(8)
 
-    print(f"Mathematical: {children_fishes_mathematical}")
-    print(f"Imperative: {children_fishes_imperative}")
-
-    print(f"New fishes from mathematical: {new_lanternfish_mathematical}")
-    print(f"New fishes from imperative: {new_lanternfish_imperative}")
-    print()
+    print(f"Imperative: {children_fishes}")
+    print(f"New fishes from imperative: {new_lanternfish}")
 
 def pass_days(lanternfish_input: Sequence[int], days: int) -> list[int]:
     lanternfish = list(lanternfish_input)
