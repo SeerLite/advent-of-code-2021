@@ -26,22 +26,21 @@ def read_list_from_file() -> list[int]:
 
 def print_new_lanternfishes(lanternfishes: Sequence[int], days: int) -> None:
     lanternfishes = list(lanternfishes)
-    new_lanternfishes: list[int] = []
     for day in range(days):
-        for i in range(len(new_lanternfishes)):
-            new_lanternfishes[i] -= 1
-
         for i in range(len(lanternfishes)):
             lanternfishes[i] -= 1
             if lanternfishes[i] < 0:
                 lanternfishes[i] = 6
                 if i in ONLY_INDEXES:
-                    new_lanternfishes.append(8)
+                    lanternfishes.append(8)
 
-    print(new_lanternfishes)
+    # print(sorted(x for x in lanternfishes))
+    print(len(sorted(x for x in lanternfishes)))
 
 
-def print_new_lanternfishes_m(lanternfishes: Sequence[int], days: int) -> None:
+def recurse_lanternfishes(lanternfishes: Sequence[int], days: int) -> list[int]:
+    if not lanternfishes:
+        return list(lanternfishes)
     lanternfishes = list(lanternfishes)
     new_lanternfishes: list[int] = []
     for i in range(len(lanternfishes)):
@@ -58,10 +57,16 @@ def print_new_lanternfishes_m(lanternfishes: Sequence[int], days: int) -> None:
     for i in range(len(new_lanternfishes)):
         new_lanternfishes[i] -= days
 
-    print(sorted(x for x in new_lanternfishes))
+    lanternfishes += recurse_lanternfishes(new_lanternfishes, 0)
+
+    return lanternfishes
+
+def print_new_lanternfishes_m(lanternfishes: Sequence[int], days: int) -> None:
+    # print(sorted(x for x in recurse_lanternfishes(lanternfishes, days)))
+    print(len(sorted(x for x in recurse_lanternfishes(lanternfishes, days))))
 
 
-days = 18
+days = 90
 lanternfishes = read_list_from_file()
 print(lanternfishes)
 print_new_lanternfishes(lanternfishes, days)
