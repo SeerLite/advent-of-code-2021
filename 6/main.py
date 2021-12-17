@@ -24,10 +24,6 @@ def read_list_from_file() -> list[int]:
     with open(filename) as input_file:
         return [int(x) for x in input_file.read().strip().split(",")]
 
-def prettyprint_list(li: Sequence[Any]) -> None:
-    print("\t".join(str(x) for x in li))
-
-
 def print_new_lanternfishes(lanternfishes: Sequence[int], days: int) -> None:
     lanternfishes = list(lanternfishes)
     new_lanternfishes: list[int] = []
@@ -42,7 +38,7 @@ def print_new_lanternfishes(lanternfishes: Sequence[int], days: int) -> None:
                 if i in ONLY_INDEXES:
                     new_lanternfishes.append(8)
 
-    prettyprint_list(new_lanternfishes)
+    print(new_lanternfishes)
 
 
 def print_new_lanternfishes_m(lanternfishes: Sequence[int], days: int) -> None:
@@ -62,11 +58,11 @@ def print_new_lanternfishes_m(lanternfishes: Sequence[int], days: int) -> None:
     for i in range(len(new_lanternfishes)):
         new_lanternfishes[i] -= days
 
-    prettyprint_list(sorted(x for x in new_lanternfishes))
+    print(sorted(x for x in new_lanternfishes))
 
 
 days = 18
 lanternfishes = read_list_from_file()
-prettyprint_list(lanternfishes)
+print(lanternfishes)
 print_new_lanternfishes(lanternfishes, days)
 print_new_lanternfishes_m(lanternfishes, days)
