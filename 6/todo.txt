@@ -1,2 +1,0 @@
-compare a single recursion level with the non recursive method
-compare only new_lanternfish
