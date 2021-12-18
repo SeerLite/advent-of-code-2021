@@ -3,8 +3,8 @@ from typing import Any, Union
 from time import sleep
 import math
 
-EXAMPLE = True
-DEBUG = True
+EXAMPLE = False
+DEBUG = False
 
 def read_list_from_file() -> list[int]:
     if not EXAMPLE:
@@ -15,33 +15,18 @@ def read_list_from_file() -> list[int]:
     with open(filename) as input_file:
         return [int(x) for x in input_file.read().strip().split(",")]
 
-def print_new_lanternfishes(lanternfishes: Sequence[int], days: int) -> None:
-    lanternfishes = list(lanternfishes)
-    for day in range(days):
-        for i in range(len(lanternfishes)):
-            lanternfishes[i] -= 1
-            if lanternfishes[i] < 0:
-                lanternfishes[i] = 6
-                lanternfishes.append(8)
 
-    # print(sorted(x for x in lanternfishes))
-    print(len(sorted(x for x in lanternfishes)))
-
-
-def recurse_lanternfishes(lanternfishes: Iterable[int], days: int) -> int:
-    global current_num
-    global recursion_level
-    global all_ranges
+def recurse_lanternfishes(lanternfishes: Iterable[int], days: int, range_result_cache=None, current_max=0, recursion_level=0) -> int:
     recursion_level += 1
-
-    # if DEBUG:
-    #     print(recursion_level)
 
     if not lanternfishes:
         recursion_level -= 1
         return 0
 
     num_lanternfishes = 0
+
+    if range_result_cache is None:
+        range_result_cache = {}
 
     for timer in lanternfishes:
         new_fishes_num = math.ceil((timer - days) / -7)
@@ -54,29 +39,21 @@ def recurse_lanternfishes(lanternfishes: Iterable[int], days: int) -> int:
             7
         )
 
-        if next_range in all_ranges:
-            range_result = all_ranges[next_range]
+        if next_range in range_result_cache:
+            range_result = range_result_cache[next_range]
         else:
-            range_result = recurse_lanternfishes(next_range, days)
-            all_ranges[next_range] = range_result
+            range_result = recurse_lanternfishes(next_range, days, range_result_cache, current_max, recursion_level)
+            range_result_cache[next_range] = range_result
         num_lanternfishes += range_result
 
-    if num_lanternfishes > current_num:
-        current_num = num_lanternfishes
-        print(recursion_level, current_num)
+    if num_lanternfishes > current_max:
+        current_max = num_lanternfishes
+        if DEBUG:
+            print(recursion_level, current_max)
 
     recursion_level -= 1
     return num_lanternfishes
 
-def print_new_lanternfishes_m(lanternfishes: MutableSequence[int], days: int) -> None:
-    print(recurse_lanternfishes(lanternfishes, days))
-
-all_ranges: dict[range, int] = {}
-current_num = 0
-lanternfishes_len = 0
-recursion_level = 0
 days = 256
 lanternfishes = read_list_from_file()
-print(lanternfishes)
-# print_new_lanternfishes(lanternfishes, days)
-print_new_lanternfishes_m(lanternfishes, days)
+print(recurse_lanternfishes(lanternfishes, days))
