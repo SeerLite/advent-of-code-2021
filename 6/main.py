@@ -42,17 +42,17 @@ def recurse_lanternfishes(lanternfishes: MutableSequence[int], days: int) -> int
     numlanternfishes = len(lanternfishes)
 
     new_lanternfishes: list[int] = []
-    for i in range(len(lanternfishes)):
-        new_fishes_num = math.ceil((lanternfishes[i] - days) / -7)
+    while lanternfishes:
+        timer = lanternfishes.pop()
+        new_fishes_num = math.ceil((timer - days) / -7)
         new_lanternfishes += range(
             # Shift by the distance from 0 (+ 1 but I'm not sure why)
-            8 + lanternfishes[i] + 1,
+            8 + timer + 1,
             # Cycle goes for 7 days
-            8 + lanternfishes[i] + 1 + 7 * new_fishes_num,
+            8 + timer + 1 + 7 * new_fishes_num,
             7
         )
 
-    lanternfishes.clear()
     len_new_level = recurse_lanternfishes(new_lanternfishes, days)
     recursion_level -= 1
     return numlanternfishes + len_new_level
