@@ -31,6 +31,7 @@ def print_new_lanternfishes(lanternfishes: Sequence[int], days: int) -> None:
 def recurse_lanternfishes(lanternfishes: Iterable[int], days: int) -> int:
     global current_num
     global recursion_level
+    global all_ranges
     recursion_level += 1
 
     # if DEBUG:
@@ -45,17 +46,20 @@ def recurse_lanternfishes(lanternfishes: Iterable[int], days: int) -> int:
     for timer in lanternfishes:
         new_fishes_num = math.ceil((timer - days) / -7)
         num_lanternfishes += 1
-        num_lanternfishes += recurse_lanternfishes(
-            range(
-                # Shift by the distance from 0 (+ 1 but I'm not sure why)
-                8 + timer + 1,
-                # Cycle goes for 7 days
-                8 + timer + 1 + 7 * new_fishes_num,
-                7
-            ),
-            days
+        next_range =  range(
+            # Shift by the distance from 0 (+ 1 but I'm not sure why)
+            8 + timer + 1,
+            # Cycle goes for 7 days
+            8 + timer + 1 + 7 * new_fishes_num,
+            7
         )
 
+        if next_range in all_ranges:
+            range_result = all_ranges[next_range]
+        else:
+            range_result = recurse_lanternfishes(next_range, days)
+            all_ranges[next_range] = range_result
+        num_lanternfishes += range_result
 
     if num_lanternfishes > current_num:
         current_num = num_lanternfishes
@@ -67,6 +71,7 @@ def recurse_lanternfishes(lanternfishes: Iterable[int], days: int) -> int:
 def print_new_lanternfishes_m(lanternfishes: MutableSequence[int], days: int) -> None:
     print(recurse_lanternfishes(lanternfishes, days))
 
+all_ranges: dict[range, int] = {}
 current_num = 0
 lanternfishes_len = 0
 recursion_level = 0
