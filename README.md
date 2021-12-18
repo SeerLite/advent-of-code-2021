@@ -15,3 +15,6 @@ All Python programs require Python version 3.9 or higher, unless otherwise state
 
 ### Dec 15
 * I updated from Python 3.8.2 to 3.9.6. Yay typing!
+
+## Dec 17
+* Finally completed day 6 part 2. That was the hardest one yet, and I'm still not completely sure about the math I set up in there but it works! And it's fast! I'm so proud of myself :)
