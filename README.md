@@ -18,3 +18,4 @@ All Python programs require Python version 3.9 or higher, unless otherwise state
 
 ## Dec 17
 * Finally completed day 6 part 2. That was the hardest one yet, and I'm still not completely sure about the math I set up in there but it works! And it's fast! I'm so proud of myself :)
+* I went to read the more popular solutions on /r/adventofcode and now I feel incredibly stupid for not figuring their way (by working with the counts of the fishes). Well, I guess that's a lesson on thinking a little more outside the box. Still proud of my solution :) Only saw one other that did it similarly (though unlike me they actually knew what they were doing)
