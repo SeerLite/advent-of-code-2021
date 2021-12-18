@@ -2,4 +2,4 @@
 
 dmypy start
 fd -e py . | entr -ccrs 'dmypy check . && python3 main.py'
-dmypy stop
+# dmypy stop
