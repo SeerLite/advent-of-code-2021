@@ -1,4 +1,4 @@
-from collections.abc import Sequence, MutableSequence
+from collections.abc import Sequence, MutableSequence, Iterable
 from typing import Any, Union
 from time import sleep
 import math
@@ -28,41 +28,49 @@ def print_new_lanternfishes(lanternfishes: Sequence[int], days: int) -> None:
     print(len(sorted(x for x in lanternfishes)))
 
 
-def recurse_lanternfishes(lanternfishes: MutableSequence[int], days: int) -> int:
+def recurse_lanternfishes(lanternfishes: Iterable[int], days: int) -> int:
+    global current_num
     global recursion_level
     recursion_level += 1
 
-    if DEBUG:
-        print(recursion_level)
+    # if DEBUG:
+    #     print(recursion_level)
 
     if not lanternfishes:
         recursion_level -= 1
         return 0
 
-    numlanternfishes = len(lanternfishes)
+    num_lanternfishes = 0
 
-    new_lanternfishes: list[int] = []
-    while lanternfishes:
-        timer = lanternfishes.pop()
+    for timer in lanternfishes:
         new_fishes_num = math.ceil((timer - days) / -7)
-        new_lanternfishes += range(
-            # Shift by the distance from 0 (+ 1 but I'm not sure why)
-            8 + timer + 1,
-            # Cycle goes for 7 days
-            8 + timer + 1 + 7 * new_fishes_num,
-            7
+        num_lanternfishes += 1
+        num_lanternfishes += recurse_lanternfishes(
+            range(
+                # Shift by the distance from 0 (+ 1 but I'm not sure why)
+                8 + timer + 1,
+                # Cycle goes for 7 days
+                8 + timer + 1 + 7 * new_fishes_num,
+                7
+            ),
+            days
         )
 
-    len_new_level = recurse_lanternfishes(new_lanternfishes, days)
+
+    if num_lanternfishes > current_num:
+        current_num = num_lanternfishes
+        print(recursion_level, current_num)
+
     recursion_level -= 1
-    return numlanternfishes + len_new_level
+    return num_lanternfishes
 
 def print_new_lanternfishes_m(lanternfishes: MutableSequence[int], days: int) -> None:
     print(recurse_lanternfishes(lanternfishes, days))
 
+current_num = 0
 lanternfishes_len = 0
 recursion_level = 0
-days = 150
+days = 256
 lanternfishes = read_list_from_file()
 print(lanternfishes)
 # print_new_lanternfishes(lanternfishes, days)
