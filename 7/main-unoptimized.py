@@ -1,4 +1,4 @@
-from typing import Sequence, Optional
+from typing import Sequence
 from collections import defaultdict
 
 EXAMPLE_MODE = True
@@ -13,22 +13,14 @@ def read_input() -> list[int]:
 
 def calculate_cheapest_expense(crabs: Sequence[int], key=lambda pos, crab: abs(pos - crab)) -> int:
     crabs = sorted(crabs)
-    min_expense: Optional[int] = None
+    expenses: dict[int, int] = defaultdict(int)
     for position in range(crabs[0], crabs[-1] + 1): # crabs are sorted
-        current_expense = 0
         for crab in crabs:
-            current_expense += key(position, crab)
+            expenses[position] += key(position, crab)
             if DEBUG:
-                print(position, current_expense)
+                print(position, expenses[position])
 
-        if min_expense is None or current_expense < min_expense:
-            min_expense = current_expense
-
-    # For mypy
-    if min_expense is None:
-        return 0
-
-    return min_expense
+    return min(expenses.values())
 
 crabs = read_input()
 cheapest_expense = calculate_cheapest_expense(crabs)
