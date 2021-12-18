@@ -28,22 +28,23 @@ def print_new_lanternfishes(lanternfishes: Sequence[int], days: int) -> None:
     print(len(sorted(x for x in lanternfishes)))
 
 
-def recurse_lanternfishes(lanternfishes: MutableSequence[int], days: int, offset: int = 0) -> MutableSequence[int]:
+def recurse_lanternfishes(lanternfishes: MutableSequence[int], days: int) -> int:
     global recursion_level
     recursion_level += 1
 
-    end = len(lanternfishes)
-
     if DEBUG:
-        print(recursion_level, end)
+        print(recursion_level)
 
-    if offset >= end:
+    if not lanternfishes:
         recursion_level -= 1
-        return lanternfishes
+        return 0
 
-    for i in range(offset, end):
+    numlanternfishes = len(lanternfishes)
+
+    new_lanternfishes: list[int] = []
+    for i in range(len(lanternfishes)):
         new_fishes_num = math.ceil((lanternfishes[i] - days) / -7)
-        lanternfishes += range(
+        new_lanternfishes += range(
             # Shift by the distance from 0 (+ 1 but I'm not sure why)
             8 + lanternfishes[i] + 1,
             # Cycle goes for 7 days
@@ -51,14 +52,15 @@ def recurse_lanternfishes(lanternfishes: MutableSequence[int], days: int, offset
             7
         )
 
-    recurse_lanternfishes(lanternfishes, days, end)
-
+    lanternfishes.clear()
+    len_new_level = recurse_lanternfishes(new_lanternfishes, days)
     recursion_level -= 1
-    return lanternfishes
+    return numlanternfishes + len_new_level
 
 def print_new_lanternfishes_m(lanternfishes: MutableSequence[int], days: int) -> None:
-    print(len(recurse_lanternfishes(lanternfishes, days)))
+    print(recurse_lanternfishes(lanternfishes, days))
 
+lanternfishes_len = 0
 recursion_level = 0
 days = 150
 lanternfishes = read_list_from_file()
