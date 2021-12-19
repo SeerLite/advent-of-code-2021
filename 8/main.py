@@ -109,7 +109,6 @@ def print_substituted_code(input_substituted_code: list[Union[int, frozenset[str
         print(printable_substituted_code)
 
 
-# Apparently mypy doesn't catch copy.deepcopy() so I'm doing it manually
 patterns, codes = read_input()
 deduced_codes = deduce_codes(patterns, codes)
 
