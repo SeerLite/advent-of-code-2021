@@ -47,11 +47,10 @@ def deduce_numbers(sequence: Sequence[frozenset[str]]) -> dict[int, frozenset[st
             number = 0
         elif len(deduced_numbers) == 8:
             number = (set(range(9)) - set(deduced_numbers)).pop()
-            print(number)
+            if DEBUG:
+                print(f"Number {number} deduced by process of elimination")
         elif len(sequence) > 0:
             sequence.insert(0, combination)
-        else:
-            print(len(deduced_numbers))
 
         deduced_numbers[number] = combination
     return deduced_numbers
@@ -72,41 +71,40 @@ def deduce_codes(patterns: Sequence[Sequence[frozenset[str]]], codes: Sequence[S
                 substituted_code.append(number)
 
         if DEBUG:
-            print_substituted_code(substituted_code, pattern, code, deduced_numbers)
+            print_readable_combinations(substituted_code)
 
-        assert all(isinstance(x, int) for x in substituted_code), "some numbers were not deduced"
+        if not all(isinstance(x, int) for x in substituted_code):
+            if DEBUG:
+                print_readable_combinations("|", pattern, code)
+                print_readable_combinations("\\", deduced_numbers)
+            assert False, "some numbers were not deduced"
+
         substituted_codes.append(int("".join(str(x) for x in substituted_code)))
 
     return substituted_codes
 
-def print_substituted_code(input_substituted_code: list[Union[int, frozenset[str]]], input_pattern: Sequence[frozenset[str]], input_code: Sequence[frozenset[str]], input_deductions: dict[int, frozenset]) -> None:
-    printable_substituted_code: list[Union[int, str]] = []
-    for number in input_substituted_code:
-        if isinstance(number, frozenset):
-            printable_substituted_code.append("".join(sorted(number)))
-        else:
-            printable_substituted_code.append(number)
+def print_readable_combinations(*args: Union[str, Sequence[Union[int, frozenset[str]]], dict[int, frozenset[str]]]) -> None:
+    printable_args: list[Union[str, list[Union[int, str]], dict[int, str]]] = []
+    for arg in args:
+        if isinstance(arg, str):
+            printable_args.append(arg)
+        elif isinstance(arg, Sequence):
+            printable_list: list[Union[int, str]] = []
+            for element in arg:
+                if isinstance(element, frozenset):
+                    printable_list.append("".join(sorted(element)))
+                else:
+                    printable_list.append(element)
 
+            printable_args.append(printable_list)
+        elif isinstance(arg, dict):
+            printable_dict: dict[int, str] = {}
+            for number, combination in sorted(arg.items()):
+                printable_dict[number] = "".join(sorted(combination))
 
-    if any(isinstance(number, frozenset) for number in input_substituted_code):
-        printable_pattern: list[Union[int, str]] = []
-        printable_code: list[Union[int, str]] = []
-        printable_deductions: dict[int, str] = {}
+            printable_args.append(printable_dict)
 
-        for number in input_pattern:
-            printable_pattern.append("".join(sorted(number)))
-
-        for number in input_code:
-            printable_code.append("".join(sorted(number)))
-
-        for number, combination in sorted(input_deductions.items()):
-            printable_deductions[number] = "".join(sorted(combination))
-
-        print(printable_substituted_code)
-        print("|", printable_pattern, printable_code)
-        print("\\", printable_deductions)
-    else:
-        print(printable_substituted_code)
+    print(*printable_args)
 
 
 patterns, codes = read_input()
