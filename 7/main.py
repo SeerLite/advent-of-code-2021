@@ -26,9 +26,7 @@ def calculate_cheapest_expense(crabs: Sequence[int], key=lambda pos, crab: abs(p
         if min_expense is None or current_expense < min_expense:
             min_expense = current_expense
 
-    # For mypy
-    if min_expense is None:
-        return 0
+    assert min_expense is not None
 
     return min_expense
 
