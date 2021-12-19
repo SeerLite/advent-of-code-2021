@@ -78,22 +78,34 @@ def deduce_code(patterns: Sequence[Sequence[frozenset[str]]], codes: Sequence[Se
                 substituted_code.append(number)
 
         if DEBUG:
-            print_substituted_code(substituted_code, code)
+            print_substituted_code(substituted_code, pattern, code, deduced_numbers)
 
-def print_substituted_code(input_code: list[Union[int, frozenset[str]]], input_original_code: Sequence[frozenset[str]]) -> None:
+def print_substituted_code(input_substituted_code: list[Union[int, frozenset[str]]], input_pattern: Sequence[frozenset[str]], input_code: Sequence[frozenset[str]], input_deductions: dict[int, frozenset]) -> None:
     printable_substituted_code: list[Union[int, str]] = []
-    for number in input_code:
+    for number in input_substituted_code:
         if isinstance(number, frozenset):
             printable_substituted_code.append("".join(sorted(number)))
         else:
             printable_substituted_code.append(number)
 
 
-    if any(isinstance(number, frozenset) for number in input_code):
-        printable_original_code: list[Union[int, str]] = []
-        for number in input_original_code:
-            printable_original_code.append("".join(sorted(number)))
-        print(printable_substituted_code, printable_original_code)
+    if any(isinstance(number, frozenset) for number in input_substituted_code):
+        printable_pattern: list[Union[int, str]] = []
+        printable_code: list[Union[int, str]] = []
+        printable_deductions: dict[int, str] = {}
+
+        for number in input_pattern:
+            printable_pattern.append("".join(sorted(number)))
+
+        for number in input_code:
+            printable_code.append("".join(sorted(number)))
+
+        for number, combination in sorted(input_deductions.items()):
+            printable_deductions[number] = "".join(sorted(combination))
+
+        print(printable_substituted_code)
+        print("|", printable_pattern, printable_code)
+        print("\\", printable_deductions)
     else:
         print(printable_substituted_code)
 
