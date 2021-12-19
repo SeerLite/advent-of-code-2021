@@ -22,45 +22,38 @@ def read_input() -> tuple[list[list[frozenset[str]]], list[list[frozenset[str]]]
 
 
 def deduce_numbers(sequence: Sequence[frozenset[str]]) -> dict[int, frozenset[str]]:
-    deduced_numbers = {}
-    for number in sequence:
-        if len(number) == 2:
-            deduced_numbers[1] = number
-        elif len(number) == 4:
-            deduced_numbers[4] = number
-        elif len(number) == 3:
-            deduced_numbers[7] = number
-        elif len(number) == 7:
-            deduced_numbers[8] = number
+    sequence = list(sequence)
+    deduced_numbers: dict[int, frozenset[str]] = {}
+    while sequence:
+        combination = sequence.pop()
 
-    for number in sequence:
-        if number in deduced_numbers.values():
-            continue
-        elif len(number - deduced_numbers[7]) == 2:
-            deduced_numbers[3] = number
-        elif len(deduced_numbers[8] - deduced_numbers[1] - number) == 0:
-            deduced_numbers[6] = number
-
-    for number in sequence:
-        if number in deduced_numbers.values():
-            continue
-        elif len(number - deduced_numbers[6]) == 0 or len(number - deduced_numbers[4]) == 2:
-            deduced_numbers[5] = number
-        elif len(number - deduced_numbers[6]) == 1:
-            deduced_numbers[2] = number
-
-    for number in sequence:
-        if number in deduced_numbers.values():
-            continue
-        elif len(deduced_numbers[8] - number) == 1:
-            deduced_numbers[0] = number
-
-    for number in sequence:
-        if number in deduced_numbers.values():
-            continue
+        if len(combination) == 2:
+            number = 1
+        elif len(combination) == 4:
+            number = 4
+        elif len(combination) == 3:
+            number = 7
+        elif len(combination) == 7:
+            number = 8
+        elif 7 in deduced_numbers and len(combination - deduced_numbers[7]) == 2:
+            number = 3
+        elif 8 in deduced_numbers and 1 in deduced_numbers and len(deduced_numbers[8] - deduced_numbers[1] - combination) == 0:
+            number = 6
+        elif (6 in deduced_numbers and len(combination - deduced_numbers[6]) == 0) or (4 in deduced_numbers and len(combination - deduced_numbers[4]) == 2):
+            number = 5
+        elif 6 in deduced_numbers and len(combination - deduced_numbers[6]) == 1:
+            number = 2
+        elif 8 in deduced_numbers and len(deduced_numbers[8] - combination) == 1:
+            number = 0
+        elif len(deduced_numbers) == 8:
+            number = (set(range(9)) - set(deduced_numbers)).pop()
+            print(number)
+        elif len(sequence) > 0:
+            sequence.insert(0, combination)
         else:
-            deduced_numbers[9] = number
+            print(len(deduced_numbers))
 
+        deduced_numbers[number] = combination
     return deduced_numbers
 
 def deduce_codes(patterns: Sequence[Sequence[frozenset[str]]], codes: Sequence[Sequence[frozenset[str]]]) -> list[int]:
