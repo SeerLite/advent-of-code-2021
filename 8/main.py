@@ -2,7 +2,7 @@ from collections.abc import Sequence, MutableSequence
 from collections import defaultdict
 from typing import Union, Any
 
-EXAMPLE_INPUT = False
+EXAMPLE_INPUT = True
 DEBUG = True
 
 def read_input() -> tuple[list[list[frozenset[str]]], list[list[frozenset[str]]]]:
@@ -63,7 +63,8 @@ def deduce_numbers(sequence: Sequence[frozenset[str]]) -> dict[int, frozenset[st
 
     return deduced_numbers
 
-def deduce_code(patterns: Sequence[Sequence[frozenset[str]]], codes: Sequence[Sequence[frozenset[str]]]) -> None:
+def deduce_codes(patterns: Sequence[Sequence[frozenset[str]]], codes: Sequence[Sequence[frozenset[str]]]) -> list[int]:
+    substituted_codes: list[int] = []
     for pattern, code in zip(patterns, codes):
         # NOTE: the better way to concatenate Sequences
         # is with itertools.chain.from_iterable
@@ -79,6 +80,11 @@ def deduce_code(patterns: Sequence[Sequence[frozenset[str]]], codes: Sequence[Se
 
         if DEBUG:
             print_substituted_code(substituted_code, pattern, code, deduced_numbers)
+
+        assert all(isinstance(x, int) for x in substituted_code)
+        substituted_codes.append(int("".join(str(x) for x in substituted_code)))
+
+    return substituted_codes
 
 def print_substituted_code(input_substituted_code: list[Union[int, frozenset[str]]], input_pattern: Sequence[frozenset[str]], input_code: Sequence[frozenset[str]], input_deductions: dict[int, frozenset]) -> None:
     printable_substituted_code: list[Union[int, str]] = []
@@ -112,4 +118,10 @@ def print_substituted_code(input_substituted_code: list[Union[int, frozenset[str
 
 # Apparently mypy doesn't catch copy.deepcopy() so I'm doing it manually
 patterns, codes = read_input()
-deduce_code(patterns, codes)
+deduced_codes = deduce_codes(patterns, codes)
+
+if DEBUG:
+    print(deduced_codes)
+
+total_sum = sum(deduced_codes)
+print(f"The sum of all output values is: {total_sum}")
