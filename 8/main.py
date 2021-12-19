@@ -1,31 +1,46 @@
+from typing import Union, Sequence, MutableSequence, cast
+
 EXAMPLE_INPUT = False
 DEBUG = True
 
-def read_input() -> list[str]:
+def read_input() -> tuple[list[list[str]], list[list[str]]]:
     filename = "input.example.txt" if EXAMPLE_INPUT else "input.txt"
     with open(filename) as input_file:
-        pin_code_lines: list[str] = []
+        patterns: list[list[str]] = []
+        codes: list[list[str]] = []
         for line in input_file:
             # Only get what's after the pipe character
             # NOTE: input is assumed to never split lines at
             # the pipe character, even if it's the example
-            pin_code_lines.append(line.split("|")[1].strip())
+            pattern, code = line.split("|")
+            patterns.append(pattern.strip().split())
+            codes.append(code.strip().split())
 
-        numbers: list[str] = []
-        for line in pin_code_lines:
-            numbers.extend(line.split())
+        return patterns, codes
 
-        return numbers
+def replace_known_numbers(lines: Sequence[MutableSequence[Union[str, int]]]):
+    for line in lines:
+        for i, number in enumerate(line):
+            if isinstance(number, str):
+                if len(number) == 2:
+                    line[i] = 1
+                elif len(number) == 4:
+                    line[i] = 4
+                elif len(number) == 3:
+                    line[i] = 7
+                elif len(number) == 7:
+                    line[i] = 8
 
-def count_unique_numbers(numbers: list[str]) -> int:
-    unique_numbers = 0
-    for number in numbers:
-        if len(number) in (2, 4, 3, 7):
-            unique_numbers += 1
+patterns: list[list[Union[str, int]]] = []
+codes: list[list[Union[str, int]]] = []
+# Apparently mypy doesn't catch copy.deepcopy() so I'm doing it manually
+for pattern, code in zip(*read_input()):
+    patterns.append([])
+    patterns[-1].extend(pattern)
+    codes.append([])
+    codes[-1].extend(code)
 
-    return unique_numbers
+replace_known_numbers(patterns)
+replace_known_numbers(codes)
 
-numbers = read_input()
-num_unique_numbers = count_unique_numbers(numbers)
-print(f"Unique numbers in all PINs: {num_unique_numbers}")
-
+print(codes)
