@@ -21,34 +21,53 @@ def read_input() -> tuple[list[list[frozenset[str]]], list[list[frozenset[str]]]
         return patterns, codes
 
 
-def deduce_numbers(sequence: Sequence[frozenset[str]]) -> dict[frozenset[str], int]:
+def deduce_numbers(sequence: Sequence[frozenset[str]]) -> dict[int, frozenset[str]]:
     deduced_numbers = {}
     for number in sequence:
         if len(number) == 2:
-            deduced_numbers[number] = 1
+            deduced_numbers[1] = number
         elif len(number) == 4:
-            deduced_numbers[number] = 4
+            deduced_numbers[4] = number
         elif len(number) == 3:
-            deduced_numbers[number] = 7
+            deduced_numbers[7] = number
         elif len(number) == 7:
-            deduced_numbers[number] = 8
+            deduced_numbers[8] = number
+
+    deduced_numbers[9] = deduced_numbers[7].union(deduced_numbers[4])
+
+    for number in sequence:
+        if number in deduced_numbers.values():
+            continue
+        elif len(number - deduced_numbers[7]) == 3:
+            deduced_numbers[3] = number
+        elif len(deduced_numbers[8] - deduced_numbers[1] - number) == 0:
+            deduced_numbers[6] = number
+
+    for number in sequence:
+        if number in deduced_numbers.values():
+            continue
+        elif len(number - deduced_numbers[6]) == 0 or len(number - deduced_numbers[4]) == 2:
+            deduced_numbers[5] = number
+        elif len(number - deduced_numbers[6]) == 1 or len(number - deduced_numbers[4]) == 3:
+            deduced_numbers[2] = number
 
     return deduced_numbers
 
 def deduce_code(patterns: Sequence[Sequence[frozenset[str]]], codes: Sequence[Sequence[frozenset[str]]]) -> None:
-    PossibleSegments = defaultdict[int, set[str]]
-    def segment_set():
-        return set("abcdefg")
-
     for pattern, code in zip(patterns, codes):
-        possible_segments = PossibleSegments(segment_set)
         # NOTE: the better way to concatenate Sequences
         # is with itertools.chain.from_iterable
         deduced_numbers = deduce_numbers(list(pattern) + list(code))
+
+        top: Any = deduced_numbers[7].difference(deduced_numbers[1])
+        top = [x for x in top][0]
+
+
+        rev_deduced_numbers = {combination: number for number, combination in deduced_numbers.items()}
         substituted_code: list[Union[int, frozenset[str]]] = []
         for number in code:
-            if number in deduced_numbers:
-                substituted_code.append(deduced_numbers[number])
+            if number in rev_deduced_numbers:
+                substituted_code.append(rev_deduced_numbers[number])
             else:
                 substituted_code.append(number)
 
