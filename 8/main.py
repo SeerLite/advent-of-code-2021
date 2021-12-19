@@ -81,7 +81,7 @@ def deduce_codes(patterns: Sequence[Sequence[frozenset[str]]], codes: Sequence[S
         if DEBUG:
             print_substituted_code(substituted_code, pattern, code, deduced_numbers)
 
-        assert all(isinstance(x, int) for x in substituted_code)
+        assert all(isinstance(x, int) for x in substituted_code), "some numbers were not deduced"
         substituted_codes.append(int("".join(str(x) for x in substituted_code)))
 
     return substituted_codes
@@ -124,4 +124,7 @@ if DEBUG:
     print(deduced_codes)
 
 total_sum = sum(deduced_codes)
+if EXAMPLE_INPUT:
+    assert total_sum == 61229, f"sum doesn't match with one from official example: got {total_sum}, should be 61229"
+
 print(f"The sum of all output values is: {total_sum}")
