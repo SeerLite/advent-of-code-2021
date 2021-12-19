@@ -65,10 +65,6 @@ def deduce_code(patterns: Sequence[Sequence[frozenset[str]]], codes: Sequence[Se
         # is with itertools.chain.from_iterable
         deduced_numbers = deduce_numbers(list(pattern) + list(code))
 
-        top: Any = deduced_numbers[7].difference(deduced_numbers[1])
-        top = [x for x in top][0]
-
-
         rev_deduced_numbers = {combination: number for number, combination in deduced_numbers.items()}
         substituted_code: list[Union[int, frozenset[str]]] = []
         for number in code:
