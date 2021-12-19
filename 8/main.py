@@ -72,17 +72,25 @@ def deduce_code(patterns: Sequence[Sequence[frozenset[str]]], codes: Sequence[Se
                 substituted_code.append(number)
 
         if DEBUG:
-            print_substituted_code(substituted_code)
+            print_substituted_code(substituted_code, code)
 
-def print_substituted_code(input_code: list[Union[int, frozenset[str]]]) -> None:
+def print_substituted_code(input_code: list[Union[int, frozenset[str]]], input_original_code: Sequence[frozenset[str]]) -> None:
     printable_substituted_code: list[Union[int, str]] = []
     for number in input_code:
         if isinstance(number, frozenset):
-            printable_substituted_code.append("".join(number))
+            printable_substituted_code.append("".join(sorted(number)))
         else:
             printable_substituted_code.append(number)
 
-    print(printable_substituted_code)
+
+    if any(isinstance(number, frozenset) for number in input_code):
+        printable_original_code: list[Union[int, str]] = []
+        for number in input_original_code:
+            printable_original_code.append("".join(sorted(number)))
+        print(printable_substituted_code, printable_original_code)
+    else:
+        print(printable_substituted_code)
+
 
 # Apparently mypy doesn't catch copy.deepcopy() so I'm doing it manually
 patterns, codes = read_input()
