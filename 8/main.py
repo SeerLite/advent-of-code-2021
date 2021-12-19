@@ -1,6 +1,6 @@
 from collections.abc import Sequence, MutableSequence
 from collections import defaultdict
-from typing import Union
+from typing import Union, Any
 
 EXAMPLE_INPUT = False
 DEBUG = True
@@ -52,8 +52,18 @@ def deduce_code(patterns: Sequence[Sequence[frozenset[str]]], codes: Sequence[Se
             else:
                 substituted_code.append(number)
 
-        print(substituted_code)
+        if DEBUG:
+            print_substituted_code(substituted_code)
 
+def print_substituted_code(input_code: list[Union[int, frozenset[str]]]) -> None:
+    printable_substituted_code: list[Union[int, str]] = []
+    for number in input_code:
+        if isinstance(number, frozenset):
+            printable_substituted_code.append("".join(number))
+        else:
+            printable_substituted_code.append(number)
+
+    print(printable_substituted_code)
 
 # Apparently mypy doesn't catch copy.deepcopy() so I'm doing it manually
 patterns, codes = read_input()
