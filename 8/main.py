@@ -48,8 +48,14 @@ def deduce_numbers(sequence: Sequence[frozenset[str]]) -> dict[int, frozenset[st
             continue
         elif len(number - deduced_numbers[6]) == 0 or len(number - deduced_numbers[4]) == 2:
             deduced_numbers[5] = number
-        elif len(number - deduced_numbers[6]) == 1 or len(number - deduced_numbers[4]) == 3:
+        elif len(number - deduced_numbers[6]) == 1:
             deduced_numbers[2] = number
+
+    for number in sequence:
+        if number in deduced_numbers.values():
+            continue
+        elif len(deduced_numbers[8] - number) == 1:
+            deduced_numbers[0] = number
 
     return deduced_numbers
 
