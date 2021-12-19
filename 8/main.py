@@ -33,12 +33,10 @@ def deduce_numbers(sequence: Sequence[frozenset[str]]) -> dict[int, frozenset[st
         elif len(number) == 7:
             deduced_numbers[8] = number
 
-    deduced_numbers[9] = deduced_numbers[7].union(deduced_numbers[4])
-
     for number in sequence:
         if number in deduced_numbers.values():
             continue
-        elif len(number - deduced_numbers[7]) == 3:
+        elif len(number - deduced_numbers[7]) == 2:
             deduced_numbers[3] = number
         elif len(deduced_numbers[8] - deduced_numbers[1] - number) == 0:
             deduced_numbers[6] = number
@@ -56,6 +54,12 @@ def deduce_numbers(sequence: Sequence[frozenset[str]]) -> dict[int, frozenset[st
             continue
         elif len(deduced_numbers[8] - number) == 1:
             deduced_numbers[0] = number
+
+    for number in sequence:
+        if number in deduced_numbers.values():
+            continue
+        else:
+            deduced_numbers[9] = number
 
     return deduced_numbers
 
