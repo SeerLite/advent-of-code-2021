@@ -1,6 +1,6 @@
 from collections.abc import Sequence, MutableSequence
 from collections import defaultdict
-from typing import Union, Any
+from typing import Union, Any, Optional
 
 EXAMPLE_INPUT = True
 DEBUG = True
@@ -22,10 +22,11 @@ def read_input() -> tuple[list[list[frozenset[str]]], list[list[frozenset[str]]]
 
 
 def deduce_numbers(sequence: Sequence[frozenset[str]]) -> dict[int, frozenset[str]]:
-    sequence = list(sequence)
+    sequence = list(set(sequence))
     deduced_numbers: dict[int, frozenset[str]] = {}
     while sequence:
         combination = sequence.pop()
+        number: Optional[int] = None
 
         if len(combination) == 2:
             number = 1
@@ -49,10 +50,12 @@ def deduce_numbers(sequence: Sequence[frozenset[str]]) -> dict[int, frozenset[st
             number = (set(range(9)) - set(deduced_numbers)).pop()
             if DEBUG:
                 print(f"Number {number} deduced by process of elimination")
+
+        if number is not None:
+            deduced_numbers[number] = combination
         elif len(sequence) > 0:
             sequence.insert(0, combination)
 
-        deduced_numbers[number] = combination
     return deduced_numbers
 
 def deduce_codes(patterns: Sequence[Sequence[frozenset[str]]], codes: Sequence[Sequence[frozenset[str]]]) -> list[int]:
