@@ -23,33 +23,44 @@ def read_input() -> tuple[list[list[frozenset[str]]], list[list[frozenset[str]]]
 
 def deduce_numbers(sequence: Sequence[frozenset[str]]) -> dict[int, frozenset[str]]:
     sequence = list(set(sequence))
+    if DEBUG:
+        # Convert the frozen sets to sorted lists to make order and therefore debug
+        # output consistent throughout different runs
+        sequence.sort(key=lambda x: sorted(x))
     deduced_numbers: dict[int, frozenset[str]] = {}
+    bottom_left: frozenset[str] = frozenset()
     while sequence:
         combination = sequence.pop()
         number: Optional[int] = None
 
-        if len(combination) == 2:
-            number = 1
-        elif len(combination) == 4:
-            number = 4
-        elif len(combination) == 3:
-            number = 7
-        elif len(combination) == 7:
-            number = 8
-        elif 7 in deduced_numbers and len(combination - deduced_numbers[7]) == 2:
-            number = 3
-        elif 8 in deduced_numbers and 1 in deduced_numbers and len(deduced_numbers[8] - deduced_numbers[1] - combination) == 0:
-            number = 6
-        elif (6 in deduced_numbers and len(combination - deduced_numbers[6]) == 0) or (4 in deduced_numbers and len(combination - deduced_numbers[4]) == 2):
-            number = 5
-        elif 6 in deduced_numbers and len(combination - deduced_numbers[6]) == 1:
-            number = 2
-        elif 8 in deduced_numbers and len(deduced_numbers[8] - combination) == 1:
-            number = 0
-        elif len(deduced_numbers) == 8:
-            number = (set(range(9)) - set(deduced_numbers)).pop()
-            if DEBUG:
-                print(f"Number {number} deduced by process of elimination")
+        if not all(number in deduced_numbers for number in [1, 4, 7, 8]):
+            if len(combination) == 2:
+                number = 1
+            elif len(combination) == 4:
+                number = 4
+            elif len(combination) == 3:
+                number = 7
+            elif len(combination) == 7:
+                number = 8
+        elif not all(number in deduced_numbers for number in [3, 6, 9]):
+            bottom_left = bottom_left or deduced_numbers[8] - deduced_numbers[7] - deduced_numbers[4]
+            if len(combination - deduced_numbers[7]) == 2:
+                number = 3
+            elif len(deduced_numbers[8] - deduced_numbers[1] - combination) == 0:
+                number = 6
+            elif len(combination - bottom_left) == 5:
+                number = 9
+        else:
+            if len(deduced_numbers[8] - combination) == 1:
+                number = 0
+            elif len(combination - bottom_left) == 4:
+                number = 5
+            elif len(combination - bottom_left) == 3:
+                number = 2
+            elif len(deduced_numbers) == 9:
+                number = (set(range(10)) - set(deduced_numbers)).pop()
+                if DEBUG:
+                    print(f"Number {number} deduced via process of elimination")
 
         if number is not None:
             deduced_numbers[number] = combination
