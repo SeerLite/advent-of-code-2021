@@ -1,6 +1,8 @@
 from typing import NamedTuple, Iterable, Sequence, Union
 from copy import deepcopy
 from time import sleep
+from sys import stdout
+import os
 
 DEBUG = True
 EXAMPLE_INPUT = False
@@ -8,6 +10,8 @@ EXPECTED_EXAMPLE_OUTPUT_1 = 15
 EXPECTED_EXAMPLE_OUTPUT_2 = 1134
 output_1 = 0
 output_2 = 0
+
+scroll = 0.0
 
 HeightMap = Sequence[Sequence[int]]
 
@@ -21,7 +25,12 @@ def read_input() -> HeightMap:
         return [[int(x) for x in line] for line in input_file.read().strip().split("\n")]
 
 def print_map(height_map: Union[HeightMap, Sequence[Sequence[Union[str, int]]]]) -> None:
-    print("\n".join("".join(str(x) for x in line) for line in height_map))
+    global scroll
+    map_fit_in_screen = height_map[int(scroll):int(scroll) + int(os.getenv("LINES")) - 2]
+    map_fit_in_screen = [row[:int(os.getenv("COLUMNS"))] for row in map_fit_in_screen]
+    stdout.write("\n".join("".join(str(x) for x in line) for line in map_fit_in_screen))
+    print()
+    scroll += 0.05
 
 def get_neighbors(height_map: HeightMap, coordinate: Coordinate) -> dict[Coordinate, int]:
     map_height, map_width = len(height_map), len(height_map[0])
@@ -74,10 +83,12 @@ def get_basin_sizes(height_map: HeightMap, points: Iterable[Coordinate]) -> list
             if DEBUG:
                 for neighbor in neighbors:
                     debug_map[neighbor.y][neighbor.x] = " "
+                stdout.write("\x1b[H\x1b[J")
                 print_map(debug_map)
-                print()
                 if EXAMPLE_INPUT:
-                    sleep(0.2)
+                    sleep(0.5)
+                else:
+                    sleep(0.004)
 
         sizes.append(size)
     return sizes
