@@ -1,6 +1,5 @@
-from collections.abc import Sequence, MutableSequence
-from collections import defaultdict
-from typing import Union, Any, Optional
+from collections.abc import Sequence
+from typing import Union, Optional
 
 EXAMPLE_INPUT = True
 DEBUG = True
