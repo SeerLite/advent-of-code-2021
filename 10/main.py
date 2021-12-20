@@ -2,20 +2,30 @@ from typing import Any, Tuple, Optional
 from collections.abc import Iterable
 
 DEBUG = True
-EXAMPLE_INPUT = False
-EXPECTED_EXAMPLE_OUTPUT = 26397
-output: Optional[int] = None
+EXAMPLE_INPUT = True
+EXPECTED_EXAMPLE_OUTPUT_1 = 26397
+EXPECTED_EXAMPLE_OUTPUT_2 = 288957
+output_1: Optional[int] = None
+output_2: Optional[int] = None
 MATCHES = {
     "(": ")",
     "[": "]",
     "{": "}",
     "<": ">"
 }
-POINTS = {
+
+ERROR_POINTS = {
     ")": 3,
     "]": 57,
     "}": 1197,
     ">": 25137
+}
+
+AUTOCOMPLETE_POINTS = {
+    ")": 1,
+    "]": 2,
+    "}": 3,
+    ">": 4
 }
 
 def read_input() -> list[str]:
@@ -23,25 +33,18 @@ def read_input() -> list[str]:
     with open(filename) as input_file:
         return input_file.read().strip().split("\n")
 
-def check_syntax(line: str) -> Optional[Tuple[str, str]]:
-    openings: list[str] = []
-    for c in line:
-        if c in MATCHES.keys():
-            openings.append(c)
-        else:
-            expected_closing = MATCHES[openings.pop()]
-            if expected_closing != c:
-                return c, expected_closing
-
-    return None
-
 def get_syntax_error_score(lines: Iterable[str]) -> int:
     scores: list[int] = []
     for line in lines:
         score = 0
-        if (syntax_error := check_syntax(line)):
-            error, _ = syntax_error
-            score += POINTS[error]
+        openings: list[str] = []
+        for c in line:
+            if c in MATCHES.keys():
+                openings.append(c)
+            else:
+                expected_closing = MATCHES[openings.pop()]
+                if expected_closing != c:
+                    score += ERROR_POINTS[c]
         scores.append(score)
 
     return sum(scores)
@@ -52,9 +55,9 @@ if DEBUG:
     print(lines)
 
 syntax_error_score = get_syntax_error_score(lines)
-output = syntax_error_score
+output_1 = syntax_error_score
 
-if EXAMPLE_INPUT and EXPECTED_EXAMPLE_OUTPUT is not None:
-    assert output == EXPECTED_EXAMPLE_OUTPUT,  f"output doesn't match with one from official example: got {output}, should be {EXPECTED_EXAMPLE_OUTPUT}"
+if EXAMPLE_INPUT and EXPECTED_EXAMPLE_OUTPUT_1 is not None:
+    assert output_1 == EXPECTED_EXAMPLE_OUTPUT_1,  f"output_1 doesn't match with one from official example: got {output_1}, should be {EXPECTED_EXAMPLE_OUTPUT_1}"
 
 print(f"The total syntax error score is {syntax_error_score}")
