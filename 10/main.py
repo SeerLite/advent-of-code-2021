@@ -36,7 +36,6 @@ def read_input() -> list[str]:
 def get_syntax_error_score(lines: Iterable[str]) -> int:
     scores: list[int] = []
     for line in lines:
-        score = 0
         openings: list[str] = []
         for c in line:
             if c in MATCHES.keys():
@@ -44,8 +43,8 @@ def get_syntax_error_score(lines: Iterable[str]) -> int:
             else:
                 expected_closing = MATCHES[openings.pop()]
                 if expected_closing != c:
-                    score += ERROR_POINTS[c]
-        scores.append(score)
+                    scores.append(ERROR_POINTS[c])
+                    break
 
     return sum(scores)
 
