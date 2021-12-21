@@ -1,21 +1,22 @@
-import itertools
+from __future__ import annotations
+import aocutils
+from aocutils import printd
 
-DEBUG = True
-EXAMPLE_INPUT = True
-EXAMPLE_OUTPUTS: list[int] = []
-outputs: list[int] = []
+aocutils.DEBUG = True
+aocutils.USE_EXAMPLE_INPUT = True
+aocutils.EXAMPLE_OUTPUTS = []
 
 def read_input() -> list[str]:
-    filename = "input.example.txt" if EXAMPLE_INPUT else "input.txt"
+    filename = "input.example.txt" if aocutils.USE_EXAMPLE_INPUT else "input.txt"
     with open(filename) as input_file:
         return input_file.read().strip().split(",")
 
-input_content = read_input()
+def main() -> list[int]:
+    outputs: list[int] = []
+    input_content = read_input()
+    printd(input_content)
 
-if DEBUG:
-    print(input_content)
+    return outputs
 
-for i, output, example_output in zip(itertools.count(1), outputs, EXAMPLE_OUTPUTS):
-    assert output == example_output, f"output {i} doesn't match with one from official example: got {output}, should be {example_output}"
-
-assert len(outputs) >= len(EXAMPLE_OUTPUTS), f"got only {len(outputs)} out of {len(EXAMPLE_OUTPUTS)} outputs"
+if __name__ == "__main__":
+    aocutils.assert_outputs(main())
