@@ -3,11 +3,12 @@ import itertools
 from collections.abc import Sequence
 from dataclasses import dataclass
 from typing import NamedTuple
+import aocutils
+from aocutils import printd
 
-DEBUG = True
-EXAMPLE_INPUT = True
-EXAMPLE_OUTPUTS: list[int] = [1656]
-outputs: list[int] = []
+aocutils.DEBUG = True
+aocutils.USE_EXAMPLE_INPUT = True
+aocutils.EXAMPLE_OUTPUTS = [1656]
 
 OctopusMap = Sequence[Sequence[int]]
 
@@ -21,22 +22,20 @@ class Coordinate:
     def __sub__(self, other: Coordinate) -> Coordinate:
         return Coordinate(self.x - other.x, self.y - other.y)
 
-def printd(*args, **kwargs) -> None: # type: ignore
-    if DEBUG:
-        print(*args, **kwargs)
+def read_input() -> OctopusMap:
+    filename = "input.example.txt" if aocutils.USE_EXAMPLE_INPUT else "input.txt"
+    with open(filename) as input_file:
+        return [list(int(x) for x in line) for line in input_file.read().strip().split("\n")]
 
 def print_map(o_map: OctopusMap) -> None:
     printd("\n".join("".join(str(c) for c in line) for line in o_map))
 
-def read_input() -> OctopusMap:
-    filename = "input.example.txt" if EXAMPLE_INPUT else "input.txt"
-    with open(filename) as input_file:
-        return [list(int(x) for x in line) for line in input_file.read().strip().split("\n")]
+def main() -> list[int]:
+    outputs: list[int] = []
+    o_map = read_input()
+    print_map(o_map)
 
-o_map = read_input()
-print_map(o_map)
+    return outputs
 
-for i, output, example_output in zip(itertools.count(1), outputs, EXAMPLE_OUTPUTS):
-    assert output == example_output, f"output {i} doesn't match with one from official example: got {output}, should be {example_output}"
-
-assert len(outputs) >= len(EXAMPLE_OUTPUTS), f"got only {len(outputs)} out of {len(EXAMPLE_OUTPUTS)} outputs"
+if __name__ == "__main__":
+    aocutils.assert_outputs(main())
