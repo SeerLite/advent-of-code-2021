@@ -1,9 +1,9 @@
-from typing import Any
+import itertools
 
 DEBUG = True
 EXAMPLE_INPUT = True
-EXPECTED_EXAMPLE_OUTPUT: Any = None
-output: Any = None
+EXAMPLE_OUTPUTS: list[int] = []
+outputs: list[int] = []
 
 def read_input() -> list[str]:
     filename = "input.example.txt" if EXAMPLE_INPUT else "input.txt"
@@ -15,5 +15,7 @@ input_content = read_input()
 if DEBUG:
     print(input_content)
 
-if EXAMPLE_INPUT and EXPECTED_EXAMPLE_OUTPUT is not None:
-    assert output == EXPECTED_EXAMPLE_OUTPUT,  f"output doesn't match with one from official example: got {output}, should be {EXPECTED_EXAMPLE_OUTPUT}"
+for i, output, example_output in zip(itertools.count(1), outputs, EXAMPLE_OUTPUTS):
+    assert output == example_output, f"output {i} doesn't match with one from official example: got {output}, should be {example_output}"
+
+assert len(outputs) >= len(EXAMPLE_OUTPUTS), f"got only {len(outputs)} out of {len(EXAMPLE_OUTPUTS)} outputs"
